@@ -10,4 +10,5 @@ type Queue interface {
 	IsEmpty(queue *model.Queue) bool
 	IsFull(queue *model.Queue) bool
 	Len(queue *model.Queue) int
+	PrintQueue(queue *model.Queue)
 }

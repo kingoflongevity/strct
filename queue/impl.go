@@ -2,6 +2,7 @@ package queue
 
 import (
 	"errors"
+	"fmt"
 	"relax/queue/model"
 )
 
@@ -49,6 +50,55 @@ func (q *queueService) Len(queue *model.Queue) int {
 	return queue.Size
 }
 
+func (q *queueService) PrintQueue(queue *model.Queue) {
+	// Data row
+	fmt.Printf("Index: ")
+	for i := 0; i < queue.Cap; i++ {
+		fmt.Printf("  %d  ", i)
+	}
+	fmt.Println()
+
+	fmt.Printf("Data:  ")
+	for i := 0; i < queue.Cap; i++ {
+		occupied := false
+		for j := 0; j < queue.Size; j++ {
+			if (queue.Front+j)%queue.Cap == i {
+				occupied = true
+				break
+			}
+		}
+		if occupied {
+			fmt.Printf(" %2d  ", queue.Data[i])
+		} else {
+			fmt.Printf("  ·  ")
+		}
+	}
+	fmt.Println()
+
+	// Front arrow
+	fmt.Printf("Front: ")
+	for i := 0; i < queue.Cap; i++ {
+		if i == queue.Front && queue.Size > 0 {
+			fmt.Printf("  ↑  ")
+		} else {
+			fmt.Printf("     ")
+		}
+	}
+	fmt.Println()
+
+	// Rear arrow
+	fmt.Printf("Rear:  ")
+	for i := 0; i < queue.Cap; i++ {
+		if i == (queue.Rear+queue.Cap-1)%queue.Cap && queue.Size > 0 {
+			fmt.Printf("  ↑  ")
+		} else {
+			fmt.Printf("     ")
+		}
+	}
+	fmt.Println()
+
+	fmt.Printf("Size=%d  Cap=%d  Front=%d  Rear=%d\n", queue.Size, queue.Cap, queue.Front, queue.Rear)
+}
 func NewQueueService() Queue {
 	return &queueService{}
 }
