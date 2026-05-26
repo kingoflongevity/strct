@@ -4,7 +4,7 @@ import "relax/queue/model"
 
 type Queue interface {
 	NewQueue(cap int) *model.Queue
-	Enqueue(queue *model.Queue, val int)
+	Enqueue(queue *model.Queue, val any)
 	Dequeue(queue *model.Queue) (any, error)
 	Peek(queue *model.Queue) (any, error)
 	IsEmpty(queue *model.Queue) bool

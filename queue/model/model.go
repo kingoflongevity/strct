@@ -1,7 +1,7 @@
 package model
 
 type Queue struct {
-	Data  []int
+	Data  []any
 	Front int
 	Rear  int
 	Size  int
@@ -10,7 +10,7 @@ type Queue struct {
 
 func NewQueue(cap int) *Queue {
 	return &Queue{
-		Data:  make([]int, cap),
+		Data:  make([]any, cap),
 		Front: 0,
 		Rear:  0,
 		Size:  0,

@@ -2,61 +2,28 @@ package main
 
 import (
 	"fmt"
-	links "relax/Links"
-	stack "relax/Stack"
-	"relax/queue"
+	tree "relax/Tree"
+	"relax/Tree/model"
 )
 
 func main() {
-	fmt.Println("=== Linked List ===")
-	testLinks()
+	ts := tree.NewTreeService()
 
-	fmt.Println("\n=== Stack ===")
-	testStack()
+	root := &model.TreeNode{Val: 1}
+	root.Left = &model.TreeNode{Val: 2}
+	root.Right = &model.TreeNode{Val: 3}
+	root.Left.Left = &model.TreeNode{Val: 4}
+	root.Left.Right = &model.TreeNode{Val: 5}
+	root.Right.Left = &model.TreeNode{Val: 6}
+	root.Right.Right = &model.TreeNode{Val: 7}
 
-	fmt.Println("\n=== Circular Queue ===")
-	testQueue()
-}
-
-func testLinks() {
-	l := links.NewLinkService()
-	head := l.NewHeadNode()
-	l.PrintList(head)
-}
-
-func testStack() {
-	s := stack.NewStackService()
-	st := s.NewStack()
-	s.Push(st, 1)
-	s.Push(st, 2)
-	s.Push(st, 3)
-	s.Pop(st)
-	s.PrintStack(st)
-}
-
-func testQueue() {
-	q := queue.NewQueueService()
-	qu := q.NewQueue(5)
-
-	// Enqueue 3 elements
-	q.Enqueue(qu, 10)
-	q.Enqueue(qu, 20)
-	q.Enqueue(qu, 30)
-	fmt.Println("After enqueue 10, 20, 30:")
-	q.PrintQueue(qu)
+	fmt.Println("Tree structure:")
+	fmt.Println("      1")
+	fmt.Println("     / \\")
+	fmt.Println("    2   3")
+	fmt.Println("   / \\ / \\")
+	fmt.Println("  4  5 6  7")
 	fmt.Println()
 
-	// Dequeue 2 elements
-	q.Dequeue(qu)
-	q.Dequeue(qu)
-	fmt.Println("After dequeue 2 times:")
-	q.PrintQueue(qu)
-	fmt.Println()
-
-	// Enqueue 3 more — will wrap around
-	q.Enqueue(qu, 40)
-	q.Enqueue(qu, 50)
-	q.Enqueue(qu, 60)
-	fmt.Println("After enqueue 40, 50, 60 (circular wrap):")
-	q.PrintQueue(qu)
+	ts.PrintLevelOrder(root)
 }

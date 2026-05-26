@@ -12,7 +12,7 @@ func (q *queueService) NewQueue(cap int) *model.Queue {
 	return model.NewQueue(cap)
 }
 
-func (q *queueService) Enqueue(queue *model.Queue, val int) {
+func (q *queueService) Enqueue(queue *model.Queue, val any) {
 	if queue.Size == queue.Cap {
 		return
 	}
@@ -68,7 +68,7 @@ func (q *queueService) PrintQueue(queue *model.Queue) {
 			}
 		}
 		if occupied {
-			fmt.Printf(" %2d  ", queue.Data[i])
+			fmt.Printf(" %-2v  ", queue.Data[i])
 		} else {
 			fmt.Printf("  ·  ")
 		}
@@ -86,10 +86,21 @@ func (q *queueService) PrintQueue(queue *model.Queue) {
 	}
 	fmt.Println()
 
-	// Rear arrow
-	fmt.Printf("Rear:  ")
+	// Rear arrow (last written element)
+	fmt.Printf("Tail:  ")
 	for i := 0; i < queue.Cap; i++ {
 		if i == (queue.Rear+queue.Cap-1)%queue.Cap && queue.Size > 0 {
+			fmt.Printf("  ↑  ")
+		} else {
+			fmt.Printf("     ")
+		}
+	}
+	fmt.Println()
+
+	// Next write position
+	fmt.Printf("Next:  ")
+	for i := 0; i < queue.Cap; i++ {
+		if i == queue.Rear {
 			fmt.Printf("  ↑  ")
 		} else {
 			fmt.Printf("     ")
