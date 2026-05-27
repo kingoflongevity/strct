@@ -14,6 +14,12 @@ func (t *treeService) NewTree() *model.TreeNode {
 	return model.NewTreeNode(0)
 }
 
+type arrayTreeService struct{}
+
+func (a *arrayTreeService) NewTree() *model.ArrayTree {
+	return model.NewArrayTree()
+}
+
 func nodeLabel(node *model.TreeNode, isCurrent bool, isProcessed bool) string {
 	if node == nil {
 		return " · "
@@ -235,6 +241,153 @@ func (t *treeService) PostOrder(root *model.TreeNode) []int {
 	return result
 }
 
-func NewTreeService() TreeService {
+func (a *arrayTreeService) Val(arr *model.ArrayTree, i int) any {
+	if i < 0 || i >= len(arr.Tree) {
+		return nil
+	}
+	return arr.Tree[i]
+}
+
+func (a *arrayTreeService) Left(arr *model.ArrayTree, i int) int {
+	return 2*i + 1
+}
+
+func (a *arrayTreeService) Right(arr *model.ArrayTree, i int) int {
+	return 2*i + 2
+}
+func (a *arrayTreeService) Parent(arr *model.ArrayTree, i int) int {
+	return (i - 1) / 2
+}
+
+func (a *arrayTreeService) Size(arr *model.ArrayTree) int {
+	return len(arr.Tree)
+}
+
+func (a *arrayTreeService) LevelOrder(arr *model.ArrayTree) []int {
+	var result []int
+	for i := 0; i < a.Size(arr); i++ {
+		fmt.Println(a.Val(arr, i))
+		result = append(result, a.Val(arr, i).(int))
+	}
+	return result
+}
+
+/* 深度优先遍历 */
+func (a *arrayTreeService) dfs(arr *model.ArrayTree, i int, order string, res *[]any, depth int) {
+	indent := strings.Repeat("  ", depth)
+	val := a.Val(arr, i)
+
+	fmt.Printf("%sdfs(i=%d, val=%v, order=%s)\n", indent, i, val, order)
+
+	if val == nil {
+		fmt.Printf("%s  → nil, return\n", indent)
+		return
+	}
+
+	if order == "pre" {
+		fmt.Printf("%s  → pre ✓ 记录 val=%v\n", indent, val)
+		*res = append(*res, val)
+	} else {
+		fmt.Printf("%s  → pre ✗\n", indent)
+	}
+
+	a.dfs(arr, a.Left(arr, i), order, res, depth+1)
+
+	if order == "in" {
+		fmt.Printf("%s  → in ✓ 记录 val=%v\n", indent, val)
+		*res = append(*res, val)
+	} else {
+		fmt.Printf("%s  → in ✗\n", indent)
+	}
+
+	a.dfs(arr, a.Right(arr, i), order, res, depth+1)
+
+	if order == "post" {
+		fmt.Printf("%s  → post ✓ 记录 val=%v\n", indent, val)
+		*res = append(*res, val)
+	} else {
+		fmt.Printf("%s  → post ✗\n", indent)
+	}
+
+	fmt.Printf("%s← return from i=%d(val=%v)\n", indent, i, val)
+}
+
+/* 前序遍历 */
+func (a *arrayTreeService) PreOrder(arr *model.ArrayTree) []any {
+	var res []any
+	fmt.Println("\n========== PreOrder Traversal ==========")
+	a.dfs(arr, 0, "pre", &res, 0)
+	fmt.Printf("Result: %v\n", res)
+	return res
+}
+
+/* 中序遍历 */
+func (a *arrayTreeService) InOrder(arr *model.ArrayTree) []any {
+	var res []any
+	fmt.Println("\n========== InOrder Traversal ==========")
+	a.dfs(arr, 0, "in", &res, 0)
+	fmt.Printf("Result: %v\n", res)
+	return res
+}
+
+/* 后序遍历 */
+func (a *arrayTreeService) PostOrder(arr *model.ArrayTree) []any {
+	var res []any
+	fmt.Println("\n========== PostOrder Traversal ==========")
+	a.dfs(arr, 0, "post", &res, 0)
+	fmt.Printf("Result: %v\n", res)
+	return res
+}
+
+// 二叉搜索树搜索
+func (t *treeService) Search(node *model.TreeNode, val int) *model.TreeNode {
+	if node == nil {
+		return nil
+	}
+	for node != nil {
+		if node.Val == val {
+			break
+		}
+		if val < node.Val {
+			node = node.Left
+		} else {
+			node = node.Right
+		}
+	}
+	return node
+}
+
+// 二叉搜索树插入
+func (t *treeService) Insert(root *model.TreeNode, val int) *model.TreeNode {
+	if root == nil {
+		return &model.TreeNode{Val: val}
+	}
+
+	cur := root
+	for {
+		if val == cur.Val {
+			return root
+		}
+		if val < cur.Val {
+			if cur.Left == nil {
+				cur.Left = &model.TreeNode{Val: val}
+				return root
+			}
+			cur = cur.Left
+		} else {
+			if cur.Right == nil {
+				cur.Right = &model.TreeNode{Val: val}
+				return root
+			}
+			cur = cur.Right
+		}
+	}
+}
+
+func NewTreeService() LinksTreeService {
 	return &treeService{}
+}
+
+func NewArrayTreeService() ArrayTreeService {
+	return &arrayTreeService{}
 }
